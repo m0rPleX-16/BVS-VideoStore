@@ -4,8 +4,13 @@
     <h2 class="m-0">Rent Video</h2>
     <div>
         <a class="btn btn-secondary me-2" asp-controller="Home" asp-action="Index">Home</a>
+        <a class="btn btn-outline-info me-2" asp-controller="Rental" asp-action="CustomerRentalsReport">Customer Rentals Report</a>
         <button type="button" class="btn btn-outline-primary" onclick="window.print()">Print</button>
     </div>
+</div>
+
+<div class="mb-3">
+    <small class="text-muted">Pick a customer and a video to create a new rental. The number in parentheses after a title is the available stock.</small>
 </div>
 
 @if (TempData["Error"] != null)
@@ -15,20 +20,26 @@
 
 <form asp-action="Rent" method="post" class="row g-2 mb-4">
     <div class="col-md-5">
-        <select name="customerId" class="form-select">
+        <label for="customer-select" class="form-label visually-hidden">Customer</label>
+        <select id="customer-select" name="customerId" class="form-select" required aria-describedby="customerHelp">
+            <option value="" disabled selected>Select a customer...</option>
             @foreach (var c in ViewBag.Customers)
             {
                 <option value="@c.CustomerId">@c.FullName</option>
             }
         </select>
+        <div id="customerHelp" class="form-text">Choose who will rent the video.</div>
     </div>
     <div class="col-md-5">
-        <select name="videoId" class="form-select">
+        <label for="video-select" class="form-label visually-hidden">Video</label>
+        <select id="video-select" name="videoId" class="form-select" required aria-describedby="videoHelp">
+            <option value="" disabled selected>Select a video...</option>
             @foreach (var v in ViewBag.Videos)
             {
                 <option value="@v.VideoId">@v.Title (@v.AvailableQuantity)</option>
             }
         </select>
+        <div id="videoHelp" class="form-text">Available stock is shown in parentheses.</div>
     </div>
     <div class="col-md-2">
         <button type="submit" class="btn btn-primary w-100">Rent</button>

@@ -122,19 +122,26 @@ public class RentalController : Controller
     // Report: customer and videos they are currently renting
     public async Task<IActionResult> CustomerRentalsReport()
     {
-        var customers = await _context.Customers
-            .Select(c => new BVS.Models.CustomerRentalsViewModel
-            {
-                CustomerId = c.CustomerId,
-                CustomerName = c.FullName,
-                CurrentRentals = _context.Rentals
-                    .Where(r => r.CustomerId == c.CustomerId && r.Status == "Rented")
-                    .Select(r => r.Video.Title)
-                    .ToList()
-            })
+        // EF Core cannot translate a nested ToList() projection here into SQL.
+        // Load customers and rented rentals separately, then build the view models in memory.
+        var customers = await _context.Customers.ToListAsync();
+
+        var rented = await _context.Rentals
+            .Where(r => r.Status == "Rented")
+            .Include(r => r.Video)
             .ToListAsync();
 
-        return View(customers);
+        var models = customers.Select(c => new BVS.Models.CustomerRentalsViewModel
+        {
+            CustomerId = c.CustomerId,
+            CustomerName = c.FullName,
+            CurrentRentals = rented
+                .Where(r => r.CustomerId == c.CustomerId)
+                .Select(r => r.Video?.Title ?? "(Unknown video)")
+                .ToList()
+        }).ToList();
+
+        return View(models);
     }
 
     // Simple CSV export for Videos
