@@ -1,55 +1,77 @@
 ﻿@model List<Rental>
+@{
+    ViewData["Title"] = "Rentals";
+    var activeRentals = Model.Where(r => r.Status == "Rented").Count();
+    var overdueRentals = Model.Where(r => r.Status == "Rented" && r.DueDate < DateTime.Now).Count();
+}
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="m-0">Rent Video</h2>
-    <div>
-        <a class="btn btn-secondary me-2" asp-controller="Home" asp-action="Index">Home</a>
-        <a class="btn btn-outline-info me-2" asp-controller="Rental" asp-action="CustomerRentalsReport">Customer Rentals Report</a>
-        <button type="button" class="btn btn-outline-primary" onclick="window.print()">Print</button>
+    <h2 class="m-0 fw-bold"><i class="bi bi-ticket-perforated-fill me-2"></i>Rentals</h2>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-info btn-sm" asp-controller="Rental" asp-action="CustomerRentalsReport"><i class="bi bi-file-earmark-text me-1"></i>Customer Report</a>
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.print()"><i class="bi bi-printer me-1"></i>Print</button>
     </div>
 </div>
 
-<div class="mb-3">
-    <small class="text-muted">Pick a customer and a video to create a new rental. The number in parentheses after a title is the available stock.</small>
+@* Summary badges *@
+<div class="d-flex gap-3 mb-4">
+    <span class="badge bg-primary fs-6 px-3 py-2">Active: @activeRentals</span>
+    @if (overdueRentals > 0)
+    {
+        <span class="badge bg-danger fs-6 px-3 py-2"><i class="bi bi-exclamation-triangle-fill me-1"></i>Overdue: @overdueRentals</span>
+    }
+    <span class="badge bg-secondary fs-6 px-3 py-2">Total: @Model.Count</span>
 </div>
 
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger">@TempData["Error"]</div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-1"></i>@TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
-<form asp-action="Rent" method="post" class="row g-2 mb-4">
-    <div class="col-md-5">
-        <label for="customer-select" class="form-label visually-hidden">Customer</label>
-        <select id="customer-select" name="customerId" class="form-select" required aria-describedby="customerHelp">
-            <option value="" disabled selected>Select a customer...</option>
-            @foreach (var c in ViewBag.Customers)
-            {
-                <option value="@c.CustomerId">@c.FullName</option>
-            }
-        </select>
-        <div id="customerHelp" class="form-text">Choose who will rent the video.</div>
-    </div>
-    <div class="col-md-5">
-        <label for="video-select" class="form-label visually-hidden">Video</label>
-        <select id="video-select" name="videoId" class="form-select" required aria-describedby="videoHelp">
-            <option value="" disabled selected>Select a video...</option>
-            @foreach (var v in ViewBag.Videos)
-            {
-                <option value="@v.VideoId">@v.Title (@v.AvailableQuantity)</option>
-            }
-        </select>
-        <div id="videoHelp" class="form-text">Available stock is shown in parentheses.</div>
-    </div>
-    <div class="col-md-2">
-        <button type="submit" class="btn btn-primary w-100">Rent</button>
-    </div>
-</form>
+@* Rent form card *@
+<div class="card mb-4 p-4">
+    <h5 class="fw-semibold mb-3">New Rental</h5>
+    <form asp-action="Rent" method="post" class="row g-3 align-items-end">
+        <div class="col-md-5">
+            <label for="customer-select" class="form-label">Customer</label>
+            <select id="customer-select" name="customerId" class="form-select" required>
+                <option value="" disabled selected>Select a customer...</option>
+                @foreach (var c in ViewBag.Customers)
+                {
+                    <option value="@c.CustomerId">@c.FullName</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-5">
+            <label for="video-select" class="form-label">Video <small class="text-muted">(stock in parentheses)</small></label>
+            <select id="video-select" name="videoId" class="form-select" required>
+                <option value="" disabled selected>Select a video...</option>
+                @foreach (var v in ViewBag.Videos)
+                {
+                    if (v.AvailableQuantity == 0)
+                    {
+                        <option value="@v.VideoId" disabled>@v.Title (0) — @v.Category</option>
+                    }
+                    else
+                    {
+                        <option value="@v.VideoId">@v.Title (@v.AvailableQuantity) — @v.Category</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-camera-video me-1"></i>Rent</button>
+        </div>
+    </form>
+</div>
 
-<h2>Rental List</h2>
-
+@* Rental table *@
+<h5 class="fw-semibold mb-2">Rental List</h5>
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table table-hover table-bordered align-middle">
         <thead class="table-dark">
             <tr>
                 <th>Customer</th>
@@ -58,25 +80,48 @@
                 <th class="text-end">Price</th>
                 <th class="text-end">Due Date</th>
                 <th class="text-end">Penalty</th>
-                <th>Action</th>
+                <th class="text-center">Action</th>
             </tr>
         </thead>
         <tbody>
         @foreach (var r in Model)
         {
-            <tr>
+            var isOverdue = r.Status == "Rented" && r.DueDate < DateTime.Now;
+            <tr class="@(isOverdue ? "table-danger" : r.Status == "Returned" ? "table-light text-muted" : "")">
                 <td>@r.Customer?.FullName</td>
                 <td>@r.Video?.Title</td>
-                <td>@r.Status</td>
-                <td class="text-end">@r.Price.ToString("C0")</td>
-                <td class="text-end">@(r.DueDate == default ? "-" : r.DueDate.ToString("yyyy-MM-dd"))</td>
-                <td class="text-end">@r.Penalty.ToString("C0")</td>
                 <td>
-                    @if (r.Status == "Rented")
+                    @if (r.Status == "Rented" && isOverdue)
                     {
-                        <a class="btn btn-sm btn-success" asp-action="Return" asp-route-id="@r.RentalId">Return</a>
+                        <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>Overdue</span>
+                    }
+                    else if (r.Status == "Rented")
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Returned</span>
                     }
                 </td>
+                <td class="text-end">₱@r.Price.ToString("N0")</td>
+                <td class="text-end">@(r.DueDate == default ? "-" : r.DueDate.ToString("MMM dd, yyyy"))</td>
+                <td class="text-end @(r.Penalty > 0 ? "text-danger fw-semibold" : "")">
+                    @(r.Penalty > 0 ? "₱" + r.Penalty.ToString("N0") : "—")
+                </td>
+                <td class="text-center">
+                    @if (r.Status == "Rented")
+                    {
+                        <a class="btn btn-sm btn-success" asp-action="Return" asp-route-id="@r.RentalId"
+                           onclick="return confirm('Mark this rental as returned?')">Return</a>
+                    }
+                </td>
+            </tr>
+        }
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="7" class="text-center text-muted py-4">No rentals yet.</td>
             </tr>
         }
         </tbody>

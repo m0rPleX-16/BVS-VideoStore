@@ -83,6 +83,13 @@ public class RentalController : Controller
 
         if (rental == null) return NotFound();
 
+        // Prevent processing a rental that was already returned
+        if (rental.Status == "Returned")
+        {
+            TempData["Error"] = "This rental has already been returned.";
+            return RedirectToAction("Index");
+        }
+
         var today = DateTime.Now;
 
         if (rental.DueDate != default && today > rental.DueDate)
@@ -96,7 +103,11 @@ public class RentalController : Controller
 
         if (rental.Video != null)
         {
-            rental.Video.AvailableQuantity++;
+            // Guard: never exceed total quantity (prevents double-return inflation)
+            if (rental.Video.AvailableQuantity < rental.Video.TotalQuantity)
+            {
+                rental.Video.AvailableQuantity++;
+            }
         }
         else
         {
@@ -122,7 +133,6 @@ public class RentalController : Controller
     // Report: customer and videos they are currently renting
     public async Task<IActionResult> CustomerRentalsReport()
     {
-        // EF Core cannot translate a nested ToList() projection here into SQL.
         // Load customers and rented rentals separately, then build the view models in memory.
         var customers = await _context.Customers.ToListAsync();
 
@@ -151,7 +161,7 @@ public class RentalController : Controller
         var csv = "Title,Category,In,Out\n";
         foreach (var v in data)
         {
-            var outCount = v.TotalQuantity - v.AvailableQuantity;
+            var outCount = Math.Max(0, v.TotalQuantity - v.AvailableQuantity);
             csv += $"\"{v.Title}\",{v.Category},{v.AvailableQuantity},{outCount}\n";
         }
         var bytes = System.Text.Encoding.UTF8.GetBytes(csv);

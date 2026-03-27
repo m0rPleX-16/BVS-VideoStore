@@ -1,24 +1,42 @@
 ﻿@model List<Video>
+@{
+    ViewData["Title"] = "Video Report";
+    var totalIn = Model.Sum(v => v.AvailableQuantity);
+    var totalOut = Model.Sum(v => Math.Max(0, v.TotalQuantity - v.AvailableQuantity));
+}
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="m-0">Video Report</h2>
-    <div>
-        <a class="btn btn-secondary me-2" asp-controller="Video" asp-action="Index">Back to Videos</a>
-        <a class="btn btn-outline-primary me-2" asp-controller="Rental" asp-action="VideosReportCsv">Export CSV</a>
-        <button type="button" class="btn btn-outline-primary" onclick="window.print()">Print</button>
+    <h2 class="m-0 fw-bold"><i class="bi bi-bar-chart-fill me-2"></i>Video Report</h2>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary btn-sm" asp-controller="Video" asp-action="Index"><i class="bi bi-arrow-left me-1"></i>Back to Videos</a>
+        <a class="btn btn-outline-success btn-sm" asp-controller="Rental" asp-action="VideosReportCsv"><i class="bi bi-download me-1"></i>Export CSV</a>
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.print()"><i class="bi bi-printer me-1"></i>Print</button>
     </div>
 </div>
 
-<div class="mb-3">
-    <strong>Total titles:</strong> @Model.Count
-</div>
-
-<div class="mb-3">
-    <a class="btn btn-outline-primary me-2" asp-action="VideosReport" asp-controller="Rental">Export CSV</a>
+<div class="row g-3 mb-4">
+    <div class="col-auto">
+        <div class="card px-4 py-3 text-center">
+            <div class="fs-4 fw-bold text-primary">@Model.Count</div>
+            <div class="small text-muted">Titles</div>
+        </div>
+    </div>
+    <div class="col-auto">
+        <div class="card px-4 py-3 text-center">
+            <div class="fs-4 fw-bold text-success">@totalIn</div>
+            <div class="small text-muted">In Stock</div>
+        </div>
+    </div>
+    <div class="col-auto">
+        <div class="card px-4 py-3 text-center">
+            <div class="fs-4 fw-bold text-warning">@totalOut</div>
+            <div class="small text-muted">Rented Out</div>
+        </div>
+    </div>
 </div>
 
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped table-bordered align-middle">
         <thead class="table-dark">
             <tr>
                 <th>Title</th>
@@ -30,12 +48,17 @@
         <tbody>
         @foreach (var v in Model)
         {
+            var outCount = Math.Max(0, v.TotalQuantity - v.AvailableQuantity);
             <tr>
                 <td>@v.Title</td>
-                <td>@v.Category</td>
+                <td><span class="badge @(v.Category.ToString() == "DVD" ? "bg-primary" : "bg-warning text-dark")">@v.Category</span></td>
                 <td class="text-end">@v.AvailableQuantity</td>
-                <td class="text-end">@(v.TotalQuantity - v.AvailableQuantity)</td>
+                <td class="text-end @(outCount > 0 ? "text-warning fw-semibold" : "")">@outCount</td>
             </tr>
+        }
+        @if (!Model.Any())
+        {
+            <tr><td colspan="4" class="text-center text-muted py-4">No videos found.</td></tr>
         }
         </tbody>
     </table>

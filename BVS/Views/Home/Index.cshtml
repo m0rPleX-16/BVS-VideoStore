@@ -1,8 +1,50 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-5">
+    <div class="bvs-hero py-5">
+        <i class="bi bi-camera-video-fill bvs-hero-icon"></i>
+        <h1 class="display-5 fw-bold mt-3">Bogsy Video Store</h1>
+        <p class="lead text-muted">Infosoft Consulting Services, Davao City &mdash; Video Rental Management System</p>
+    </div>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <div class="col-md-3">
+        <a href="/Customer" class="text-decoration-none">
+            <div class="card bvs-dashboard-card text-center p-4">
+                <i class="bi bi-people-fill bvs-card-icon mb-2"></i>
+                <h5 class="fw-semibold">Customers</h5>
+                <p class="text-muted small mb-0">Add and manage customer records</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/Video" class="text-decoration-none">
+            <div class="card bvs-dashboard-card text-center p-4">
+                <i class="bi bi-collection-play-fill bvs-card-icon mb-2"></i>
+                <h5 class="fw-semibold">Videos</h5>
+                <p class="text-muted small mb-0">Manage your VCD and DVD library</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/Rental" class="text-decoration-none">
+            <div class="card bvs-dashboard-card text-center p-4">
+                <i class="bi bi-ticket-perforated-fill bvs-card-icon mb-2"></i>
+                <h5 class="fw-semibold">Rentals</h5>
+                <p class="text-muted small mb-0">Rent and return videos</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/Video/Report" class="text-decoration-none">
+            <div class="card bvs-dashboard-card text-center p-4">
+                <i class="bi bi-bar-chart-fill bvs-card-icon mb-2"></i>
+                <h5 class="fw-semibold">Reports</h5>
+                <p class="text-muted small mb-0">View inventory and rental reports</p>
+            </div>
+        </a>
+    </div>
 </div>

@@ -21,7 +21,7 @@ namespace BVS.Models
         [Range(0, int.MaxValue)]
         public int AvailableQuantity { get; set; }
 
-        [Range(0, int.MaxValue)]
+        [Range(1, int.MaxValue)]
         [Required]
         public int TotalQuantity { get; set; }
 

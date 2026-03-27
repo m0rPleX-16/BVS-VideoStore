@@ -1,54 +1,109 @@
-/* BVS theme overrides */
-:root{
-  --bvs-primary: #0d6efd; /* Bootstrap primary */
-  --bvs-accent: #ffb703; /* warm accent */
-  --bvs-bg: #f8fafc; /* light background */
+/* BVS theme */
+:root {
+  --bvs-primary: #0d6efd;
+  --bvs-accent: #ffb703;
+  --bvs-bg: #f4f6f9;
   --bvs-card: #ffffff;
   --bvs-text: #1f2937;
 }
 
-body{
+body {
   background-color: var(--bvs-bg);
   color: var(--bvs-text);
 }
 
-.navbar-brand{
-  font-weight:700;
+/* Navbar */
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.3rem;
   color: var(--bvs-primary) !important;
+  letter-spacing: .5px;
 }
 
-.nav-link{
-  color: rgba(31,41,55,0.9) !important;
-}
-
-.btn-primary{
-  background: linear-gradient(180deg,var(--bvs-primary), #0b5ed7);
-  border-color: rgba(11,94,215,0.9);
-}
-
-.table thead.table-dark{
-  background: linear-gradient(180deg, #0b5ed7, #084298);
-  color: #fff;
-}
-
-.card{
-  background: var(--bvs-card);
-  border-radius: .5rem;
-  box-shadow: 0 6px 18px rgba(15,23,42,0.06);
-}
-
-.btn-outline-primary{
-  border-color: var(--bvs-primary);
+.bvs-logo-icon {
+  font-size: 1.4rem;
   color: var(--bvs-primary);
 }
 
-.alert-danger{
+/* Dashboard / hero icons */
+.bvs-hero-icon {
+  font-size: 3.5rem;
+  color: var(--bvs-primary);
+}
+
+.bvs-card-icon {
+  font-size: 2.2rem;
+  color: var(--bvs-primary);
+  display: block;
+}
+
+.nav-link {
+  color: rgba(31, 41, 55, 0.85) !important;
+  border-radius: .375rem;
+  padding: .4rem .75rem !important;
+  transition: background .15s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: rgba(13, 110, 253, 0.08);
+  color: var(--bvs-primary) !important;
+}
+
+/* Cards */
+.card {
+  background: var(--bvs-card);
+  border-radius: .6rem;
+  border: 1px solid rgba(0,0,0,.07);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+}
+
+/* Dashboard cards */
+.bvs-dashboard-card {
+  transition: transform .15s, box-shadow .15s;
+  color: var(--bvs-text);
+}
+
+.bvs-dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(13, 110, 253, 0.15);
+  border-color: var(--bvs-primary);
+}
+
+/* Hero */
+.bvs-hero {
+  background: linear-gradient(135deg, #e8f0fe 0%, #f4f6f9 100%);
+  border-radius: 1rem;
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(180deg, var(--bvs-primary), #0b5ed7);
+  border-color: rgba(11, 94, 215, 0.9);
+}
+
+/* Table */
+.table thead.table-dark th {
+  background: linear-gradient(180deg, #1a56db, #0b3fa8);
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(13, 110, 253, 0.04);
+}
+
+/* Alerts */
+.alert-danger {
   background: #fff1f0;
   border-color: #ffccd5;
   color: #842029;
 }
 
-.footer{
+/* Footer */
+.footer {
   background: transparent;
-  color: rgba(31,41,55,0.6);
+  color: rgba(31, 41, 55, 0.6);
+  font-size: .875rem;
 }
