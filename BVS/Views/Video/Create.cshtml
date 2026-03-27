@@ -1,0 +1,46 @@
+@model BVS.Models.Video
+
+@{
+    var categories = ViewBag.Categories as Array;
+}
+
+<h2>Add Video</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Category</label>
+        <select asp-for="Category" class="form-select">
+            @foreach (var c in categories)
+            {
+                <option value="@c">@c</option>
+            }
+        </select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Total Quantity</label>
+        <input asp-for="TotalQuantity" class="form-control" />
+        <span asp-validation-for="TotalQuantity" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Available Quantity</label>
+        <input asp-for="AvailableQuantity" class="form-control" />
+        <span asp-validation-for="AvailableQuantity" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Rental Days (1-3)</label>
+        <input asp-for="RentalDays" class="form-control" />
+        <span asp-validation-for="RentalDays" class="text-danger"></span>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Create</button>
+</form>

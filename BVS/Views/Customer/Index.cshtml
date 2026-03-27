@@ -1,0 +1,33 @@
+@model List<BVS.Models.Customer>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="m-0">Customers</h2>
+    <div>
+        <a class="btn btn-primary me-2" asp-action="Create">Add Customer</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Full Name</th>
+                <th>Contact</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.FullName</td>
+                <td>@c.Contact</td>
+                <td>
+                    <a class="btn btn-sm btn-secondary me-1" asp-action="Edit" asp-route-id="@c.CustomerId">Edit</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@c.CustomerId">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

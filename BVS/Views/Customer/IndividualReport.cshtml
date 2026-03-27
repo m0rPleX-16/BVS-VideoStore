@@ -1,0 +1,52 @@
+@model BVS.Models.IndividualCustomerReportViewModel
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="m-0">Customer Report - @Model.CustomerName</h2>
+    <div>
+        <a class="btn btn-secondary me-2" asp-action="Index">Back</a>
+        <button type="button" class="btn btn-outline-primary" onclick="window.print()">Print</button>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5>Contact</h5>
+        <p>@Model.Contact</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Current Rentals</h4>
+        @if (Model.CurrentRentals.Any())
+        {
+            <ul>
+            @foreach (var t in Model.CurrentRentals)
+            {
+                <li>@t</li>
+            }
+            </ul>
+        }
+        else
+        {
+            <p><em>No current rentals</em></p>
+        }
+    </div>
+
+    <div class="col-md-6">
+        <h4>Past Rentals</h4>
+        @if (Model.PastRentals.Any())
+        {
+            <ul>
+            @foreach (var t in Model.PastRentals)
+            {
+                <li>@t</li>
+            }
+            </ul>
+        }
+        else
+        {
+            <p><em>No past rentals</em></p>
+        }
+    </div>
+</div>

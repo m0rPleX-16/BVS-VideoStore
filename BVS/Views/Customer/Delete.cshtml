@@ -1,0 +1,11 @@
+@model BVS.Models.Customer
+
+<h2>Delete Customer</h2>
+
+<div class="alert alert-warning">Are you sure you want to delete <strong>@Model.FullName</strong>?</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="CustomerId" />
+    <button class="btn btn-danger" type="submit">Delete</button>
+    <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+</form>

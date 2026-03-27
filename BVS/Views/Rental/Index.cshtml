@@ -1,0 +1,73 @@
+﻿@model List<Rental>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="m-0">Rent Video</h2>
+    <div>
+        <a class="btn btn-secondary me-2" asp-controller="Home" asp-action="Index">Home</a>
+        <button type="button" class="btn btn-outline-primary" onclick="window.print()">Print</button>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form asp-action="Rent" method="post" class="row g-2 mb-4">
+    <div class="col-md-5">
+        <select name="customerId" class="form-select">
+            @foreach (var c in ViewBag.Customers)
+            {
+                <option value="@c.CustomerId">@c.FullName</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-5">
+        <select name="videoId" class="form-select">
+            @foreach (var v in ViewBag.Videos)
+            {
+                <option value="@v.VideoId">@v.Title (@v.AvailableQuantity)</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Rent</button>
+    </div>
+</form>
+
+<h2>Rental List</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Customer</th>
+                <th>Video</th>
+                <th>Status</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">Due Date</th>
+                <th class="text-end">Penalty</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Customer?.FullName</td>
+                <td>@r.Video?.Title</td>
+                <td>@r.Status</td>
+                <td class="text-end">@r.Price.ToString("C0")</td>
+                <td class="text-end">@(r.DueDate == default ? "-" : r.DueDate.ToString("yyyy-MM-dd"))</td>
+                <td class="text-end">@r.Penalty.ToString("C0")</td>
+                <td>
+                    @if (r.Status == "Rented")
+                    {
+                        <a class="btn btn-sm btn-success" asp-action="Return" asp-route-id="@r.RentalId">Return</a>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

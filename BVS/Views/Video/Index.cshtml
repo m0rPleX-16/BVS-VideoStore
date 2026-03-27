@@ -1,0 +1,38 @@
+@model List<BVS.Models.Video>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="m-0">Videos</h2>
+    <div>
+        <a class="btn btn-primary me-2" asp-action="Create">Add Video</a>
+        <a class="btn btn-secondary" asp-action="Report">Report</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th class="text-end">In</th>
+                <th class="text-end">Out</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var v in Model)
+        {
+            <tr>
+                <td>@v.Title</td>
+                <td>@v.Category</td>
+                <td class="text-end">@v.AvailableQuantity</td>
+                <td class="text-end">@(v.TotalQuantity - v.AvailableQuantity)</td>
+                <td>
+                    <a class="btn btn-sm btn-secondary me-1" asp-action="Edit" asp-route-id="@v.VideoId">Edit</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@v.VideoId">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

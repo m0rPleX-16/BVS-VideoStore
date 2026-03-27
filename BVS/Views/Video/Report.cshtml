@@ -1,0 +1,42 @@
+﻿@model List<Video>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="m-0">Video Report</h2>
+    <div>
+        <a class="btn btn-secondary me-2" asp-controller="Video" asp-action="Index">Back to Videos</a>
+        <a class="btn btn-outline-primary me-2" asp-controller="Rental" asp-action="VideosReportCsv">Export CSV</a>
+        <button type="button" class="btn btn-outline-primary" onclick="window.print()">Print</button>
+    </div>
+</div>
+
+<div class="mb-3">
+    <strong>Total titles:</strong> @Model.Count
+</div>
+
+<div class="mb-3">
+    <a class="btn btn-outline-primary me-2" asp-action="VideosReport" asp-controller="Rental">Export CSV</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th class="text-end">In</th>
+                <th class="text-end">Out</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var v in Model)
+        {
+            <tr>
+                <td>@v.Title</td>
+                <td>@v.Category</td>
+                <td class="text-end">@v.AvailableQuantity</td>
+                <td class="text-end">@(v.TotalQuantity - v.AvailableQuantity)</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
